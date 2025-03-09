@@ -3,6 +3,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
 import {
 	getAllVideos,
+	getUserVideosById,
 	getVideoById,
 	getVideoByTitle,
 	togglePublishStatus,
@@ -34,7 +35,8 @@ videoRouter
 	.patch(verifyToken, upload.single("thumbnail"), updateThumbnail);
 
 videoRouter.route("/view-increment").post(verifyToken, videoViewIncrement);
-videoRouter.route("/getVideo").get(getVideoById);
+videoRouter.route("/getVideo/:videoId").get(verifyToken, getVideoById);
+videoRouter.route("/getUserVideos/:userId").get(verifyToken, getUserVideosById);
 videoRouter.route("/search").get(getVideoByTitle);
 videoRouter.route("/getAllvideo").get(verifyToken, getAllVideos);
 videoRouter

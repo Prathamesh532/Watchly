@@ -18,7 +18,9 @@ const subscribeChannel = asyncErrorHandler(async (req, res) => {
 
 	if (exists) {
 		await exists.deleteOne({ _id: exists._id });
-		throw new ApiError(400, "Channel UnSubscribed");
+		return res
+			.status(200)
+			.json(new ApiResponse(200, exists, "Channel UnSubscribed"));
 	}
 
 	const subscriber = await Subscription.create({
@@ -88,9 +90,9 @@ const getSubscribedChannels = asyncErrorHandler(async (req, res) => {
 				_id: 0,
 				channel_id: "$channel._id",
 				username: "$channel.username",
-				name: "$channel.name",
+				name: "$channel.fullname",
 				email: "$channel.email",
-				image: "$channel.image",
+				avatar: "$channel.avatar",
 			},
 		},
 	]);

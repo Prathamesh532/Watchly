@@ -10,6 +10,8 @@ import {
 	updateCoverImage,
 	getUserChannelProfileData,
 	getUserWatchHistory,
+	userAvatarCoverImageUpload,
+	getUserById,
 } from "../controllers/users.controller.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -17,7 +19,8 @@ import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const userRouter = Router();
 
-userRouter.route("/register").post(
+userRouter.route("/register").post(userResgister);
+userRouter.route("/avatarCoverImage").post(
 	upload.fields([
 		{
 			name: "avatar",
@@ -28,12 +31,13 @@ userRouter.route("/register").post(
 			maxCount: 1,
 		},
 	]),
-	userResgister
+	userAvatarCoverImageUpload
 );
 userRouter.route("/login").post(userLogin);
 userRouter.route("/logout").post(verifyToken, logoutUser);
 userRouter.route("/refreshAccessToken").post(refreshToken);
 userRouter.route("/me").get(verifyToken, getUser);
+userRouter.route("/user/:userId").get(getUserById);
 userRouter.route("/changepassword").post(verifyToken, changePassword);
 userRouter.route("/userUpdate").put(verifyToken, updateUser);
 userRouter

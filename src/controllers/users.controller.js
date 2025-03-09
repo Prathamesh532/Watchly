@@ -61,7 +61,34 @@ const userResgister = asyncErrorHandler(async (req, res) => {
 		);
 	}
 
-	// File Handling with Proper Checks
+	// Create User
+	const user = await User.create({
+		username,
+		fullname,
+		email,
+		password,
+	});
+
+	const userCreated = await User.findById(user._id).select(
+		"-password -refreshToken"
+	);
+
+	if (!userCreated) {
+		throw new CustomError(500, "Error creating user");
+	}
+
+	return res
+		.status(201)
+		.json(new ApiResponse(200, userCreated, "User registered successfully"));
+});
+
+const userAvatarCoverImageUpload = asyncErrorHandler(async (req, res) => {
+	const { userId } = req.body;
+
+	if (!userId) {
+		throw new ApiError(400, "User id is required");
+	}
+
 	let avatarLocalPath = null;
 	let coverImageLocalPath = null;
 
@@ -85,45 +112,42 @@ const userResgister = asyncErrorHandler(async (req, res) => {
 		coverImage = await uploadOnCloudinary(coverImageLocalPath);
 	}
 
-	console.log("avatar", avatar);
+	// Update User
+	const user = await User.findByIdAndUpdate(
+		userId,
+		{
+			avatar: avatar?.url,
+			coverImage: coverImage?.url || "",
+		},
+		{ new: true }
+	).select("-password -refreshToken");
 
-	// Create User
-	const user = await User.create({
-		username,
-		fullname,
-		email,
-		password,
-		avatar: avatar.url,
-		coverImage: coverImage?.url || "",
-	});
-
-	const userCreated = await User.findById(user._id).select(
-		"-password -refreshToken"
-	);
-
-	if (!userCreated) {
-		throw new CustomError(500, "Error creating user");
+	if (!user) {
+		throw new CustomError(
+			500,
+			"Server Error while uploading user avatar or cover image"
+		);
 	}
 
-	res
-		.status(201)
-		.json(new ApiResponse(200, "User registered successfully", userCreated));
+	return res
+		.status(200)
+		.json(new ApiResponse(200, user, "User updated successfully"));
 });
 
 const userLogin = asyncErrorHandler(async (req, res) => {
 	if (!req.body) {
 		throw new ApiError(400, "Bad Request, body is required");
 	}
-	const { username, email, password } = req.body;
+	const { username, password } = req.body;
 
-	if (!email || !username) {
-		throwError("Email or username are required", 400);
+	if (!username) {
+		throwError("username are required", 400);
 	}
 
-	let userExists = await User.findOne({ email });
+	let userExists = await User.findOne({ username });
 
 	if (!userExists) {
-		throwError(`User with ${email} is not register`, 400);
+		throwError(`User with ${username} is not register`, 400);
 	}
 
 	const isPasswordMatch = await userExists.isPasswordCorrect(password);
@@ -435,7 +459,7 @@ const getUserWatchHistory = asyncErrorHandler(async (req, res) => {
 	const userWatchHistory = await User.aggregate([
 		{
 			$match: {
-				_id: new mongoose.Schema.Types.ObjectId(req.user?._id),
+				_id: new mongoose.Types.ObjectId(req.user?._id),
 			},
 		},
 		{
@@ -490,8 +514,25 @@ const getUserWatchHistory = asyncErrorHandler(async (req, res) => {
 		);
 });
 
+const getUserById = asyncErrorHandler(async (req, res) => {
+	const { userId } = req.params;
+
+	if (!userId?.trim()) {
+		throw new ApiError(400, "User Id is required");
+	}
+
+	const user = await User.findById(userId).select("-password -refreshToken -watchHistory");
+
+	if (!user) {
+		throw new ApiError(400, "User Not Found");
+	}
+
+	return res.status(200).json(new ApiResponse(200, user, "User Fetched"));
+});
+
 export {
 	userResgister,
+	userAvatarCoverImageUpload,
 	userLogin,
 	logoutUser,
 	refreshToken,
@@ -502,4 +543,5 @@ export {
 	updateCoverImage,
 	getUserChannelProfileData,
 	getUserWatchHistory,
+	getUserById,
 };

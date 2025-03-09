@@ -11,7 +11,7 @@ const commentRouter = Router();
 
 commentRouter.route("/").post(verifyToken, addComment);
 commentRouter
-	.route("/getVideoComment/:videoId/comments")
+	.route("/getVideoComment/:videoId")
 	.get(verifyToken, getVideoComments);
 commentRouter.route("/updateComment").patch(verifyToken, updateComment);
 commentRouter
