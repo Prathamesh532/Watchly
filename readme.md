@@ -37,7 +37,3 @@ A comprehensive backend implementation for a video hosting platform similar to Y
 - Password hashing
 - Secure HTTP-only cookies
 
-
-## License
-
-(Include license information here)
