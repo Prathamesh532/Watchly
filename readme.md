@@ -1,23 +1,43 @@
-### DB Connection
--   mongoose gave a **.connect **function which take the args(URL , Options)
+# YouTube Clone Backend - Watchly
 
-- **process.exit()** : method in Node.js used to terminate the Node.js process programmatically
-    Common Exit Codes:
-**0**: Success.
-**1**: General failure or unspecified error.
-**2**: Misuse of shell built-ins (e.g., invalid usage of a command).
-**126**: Command invoked cannot execute.
-**127**: Command not found.
-**128**: Invalid argument to exit().
-**greater than 128**: Termination due to a signal (e.g., 130 for Ctrl+C, which is signal 2 + 128).
+A comprehensive backend implementation for a video hosting platform similar to YouTube, built with modern technologies and best practices.
 
-### Error Class in Node.js
+## Technologies Used
 
-### multer all basic
-- setting up Multer, basic file uploads, and simple validation.
-- Master custom storage engines, validation, error handling, and security best practices.
-- Learn how to integrate with cloud storage for scalability.
-- Implement advanced features like resumable uploads or real-time file processing.
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **MongoDB** - Database
+- **Mongoose** - ODM (Object Data Modeling)
+- **JWT** - Authentication and authorization
+- **bcrypt** - Password hashing
+
+## Features
+
+- **User Authentication**
+  - Secure signup/login functionality
+  - Password encryption with bcrypt
+  - JWT-based authentication
+  - Access and refresh token implementation
+
+- **Video Management**
+  - Video upload and streaming
+  - Video metadata handling
+  - Thumbnail generation
+
+- **Social Features**
+  - Like/dislike videos
+  - Comment on videos
+  - Reply to comments
+  - Subscribe/unsubscribe to channels
+
+## Security Implementations
+
+- JWT for secure API access
+- Access and refresh token mechanism
+- Password hashing
+- Secure HTTP-only cookies
 
 
-https://pandao.github.io/editor.md/en.html
+## License
+
+(Include license information here)
