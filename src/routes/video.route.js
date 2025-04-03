@@ -38,7 +38,7 @@ videoRouter.route("/view-increment").post(verifyToken, videoViewIncrement);
 videoRouter.route("/getVideo/:videoId").get(verifyToken, getVideoById);
 videoRouter.route("/getUserVideos/:userId").get(verifyToken, getUserVideosById);
 videoRouter.route("/search").get(getVideoByTitle);
-videoRouter.route("/getAllvideo").get(verifyToken, getAllVideos);
+videoRouter.route("/getAllvideo").get(getAllVideos);
 videoRouter
 	.route("/toggle-publish/:videoId")
 	.patch(verifyToken, togglePublishStatus);
